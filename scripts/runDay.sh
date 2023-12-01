@@ -13,7 +13,7 @@ while getopts "p:i:d:tm" arg; do
   esac
 done
 
-echo "Day $DAY - Part $PART \n"
+echo "Day $DAY - Part $PART"
 if $METRICS;
 then
   time bun run ./days/$DAY/$PART.ts $INPUT
