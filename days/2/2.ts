@@ -5,47 +5,26 @@ const rawData = await Bun.file(`${import.meta.dir}/${inputFile || 'input.txt'}`)
 const data = rawData.split('\n');
 
 let sum = 0;
-lines: for (let i = 0; i < data.length; i++) {
-  const line = data[i];
+data.forEach(line => {
   const [rawGameId, rawGame] = line.split(': ');
   const gameNum = +rawGameId.split('Game ')[1];
   const rawSets = rawGame.split('; ');
-  const allValid = rawSets.every(rawSet => {
+
+  const maxCubes = {
+    red: 0,
+    green: 0,
+    blue: 0,
+  };
+
+  rawSets.forEach((rawSet) => {
     const rawCubes = rawSet.split(', ');
-    const cubes = rawCubes.map(rawCube => {
-      const [count, color] = rawCube.split(' ');
-      return {
-        count: +count,
-        color,
-      }
+    rawCubes.forEach((rawCube) => {
+      const [count, color] = rawCube.split(' ') as [number, 'red' | 'green' | 'blue'];
+      maxCubes[color] = Math.max(maxCubes[color], count);
     });
-
-    const valid = cubes.every(cube => {
-      if (cube.color === 'red' && cube.count > 12) {
-        return false;
-      }
-
-      if (cube.color === 'green' && cube.count > 13) {
-        return false;
-      }
-
-      if (cube.color === 'blue' && cube.count > 14) {
-        return false;
-      }
-
-      return true;
-    });
-
-    return valid;
-
-    // console.log(valid);
-
-    // console.log(cubes);
   });
 
-  if (allValid) {
-    sum += gameNum;
-  }
-};
+  sum += maxCubes.red * maxCubes.green * maxCubes.blue;
+});
 
 console.log(sum);
