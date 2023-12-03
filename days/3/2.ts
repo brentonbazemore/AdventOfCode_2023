@@ -4,12 +4,12 @@ const inputFile = process.argv[2];
 const rawData = await Bun.file(`${import.meta.dir}/${inputFile || 'input.txt'}`).text();
 const data = rawData.split('\n');
 
-const symbols = new Set();
-data.forEach(line => {
-  let clean = line.replaceAll(/\d/g, '');
-  clean = clean.replaceAll('.', '');
-  clean.split('').forEach((char) => symbols.add(char));
-});
+const symbols = new Set('*');
+// data.forEach(line => {
+//   let clean = line.replaceAll(/\d/g, '');
+//   clean = clean.replaceAll('.', '');
+//   clean.split('').forEach((char) => symbols.add(char));
+// });
 
 const isDigit = new RegExp(/\d/);
 
@@ -38,7 +38,7 @@ const getFullNumber = (row: number, column: number) => {
 };
 
 const seenCoords = new Set();
-const partNums: number[] = [];
+const gearRatios: number[] = [];
 
 for (let i = 0; i < data.length; i++) {
   const row = data[i];
@@ -46,6 +46,7 @@ for (let i = 0; i < data.length; i++) {
     const cell = row[j];
 
     if (symbols.has(cell)) {
+      const partNums: number[] = [];
       for (let k = -1; k <= 1; k++) { // row square
         for (let l = -1; l <= 1; l++) { // column square
           if (isDigit.test(data[i + k][j + l])) {
@@ -57,11 +58,15 @@ for (let i = 0; i < data.length; i++) {
           }
         }
       }
+
+      if (partNums.length === 2) {
+        gearRatios.push(partNums[0] * partNums[1]);
+      }
     }
   }
 }
 
 let sum = 0;
-partNums.forEach(num => sum += num);
+gearRatios.forEach(num => sum += num);
 
 console.log(sum);
