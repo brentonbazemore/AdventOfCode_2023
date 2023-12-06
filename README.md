@@ -29,6 +29,11 @@ bun p1
 bun p2
 ```
 
+### To run any file for the current day:
+```bash
+bun p <file name without extension>
+```
+
 ### To run with `input.test.txt` as input:
 ```bash
 bun p(1|2) -t

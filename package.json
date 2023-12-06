@@ -9,7 +9,8 @@
     "new": "./scripts/newDay.sh",
     "next": "./scripts/nextPart.sh",
     "p1": "./scripts/runDay.sh -p1",
-    "p2": "./scripts/runDay.sh -p2"
+    "p2": "./scripts/runDay.sh -p2",
+    "p": "./scripts/runDay.sh -p"
   },
   "devDependencies": {
     "bun-types": "^1.0.2"
