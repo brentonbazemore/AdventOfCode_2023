@@ -4,10 +4,12 @@ const inputFile = process.argv[2];
 const rawData = await Bun.file(`${import.meta.dir}/${inputFile || 'input.txt'}`).text();
 const data = rawData.split('\n');
 
-const [, ...times] = data[0].split(/\s+/).map(Number);
-const [, ...distances] = data[1].split(/\s+/).map(Number);
+const [, ...timesRaw] = data[0].split(/\s+/);
+const [, ...distancesRaw] = data[1].split(/\s+/);
+const times = [+timesRaw.join('')];
+const distances = [+distancesRaw.join('')];
 
-let beatCounts: number[] = [];
+let result = 1;
 times.forEach((time, index) => {
   const recordDistance = distances[index];
   let beatCount = 0;
@@ -20,9 +22,7 @@ times.forEach((time, index) => {
       beatCount++;
     }
   }
-  beatCounts.push(beatCount);
+  result *= beatCount;
 })
 
-let result = 1;
-beatCounts.forEach(beat => result *= beat);
 console.log(result);
