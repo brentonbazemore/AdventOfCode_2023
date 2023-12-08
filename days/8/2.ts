@@ -16,16 +16,33 @@ for (let i = 2; i < data.length; i++) {
   nodes[node] = { L, R };
 }
 
-let currNode = 'AAA';
+// const ends = Object.keys(nodes).filter((node) => node[2] === 'Z')
+let currNodes = Object.keys(nodes).filter((node) => node[2] === 'A');
 let takenSteps = 0;
+console.log(currNodes);
+const cycledNodes = new Set();
 while (true) {
-  if (currNode === 'ZZZ') {
+  currNodes.forEach(node => {
+    if (node[2] === 'Z') {
+      cycledNodes.add(node);
+      console.log(node, takenSteps);
+      if (cycledNodes.size === currNodes.length) {
+        throw 'hi';
+        // at this point, I just manually found lcm for quickness. I added it officially in p2.5
+      }
+    }
+  })
+  if (currNodes.every(node => node[2] === 'Z')) {
     break;
   }
 
   const inst = instructions[takenSteps % instructions.length];
-  currNode = nodes[currNode][inst as 'L' | 'R'];
+  currNodes = currNodes.map(currNode => nodes[currNode][inst as 'L' | 'R']);
   takenSteps++;
+
+  if (takenSteps % 1000000 === 0) {
+    console.log('Step', takenSteps);
+  }
 }
 
 console.log(takenSteps);
