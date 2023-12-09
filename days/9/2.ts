@@ -27,6 +27,6 @@ const extrap = (line: number[]) => {
 
 let sum = 0;
 data.forEach(line => {
-  sum += extrap(line.split(' ').map(Number));
+  sum += extrap(line.split(' ').map(Number).reverse());
 });
 console.log(sum);
