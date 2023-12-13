@@ -93,7 +93,7 @@ const findValid = (record: string, groups: number[], seenArrangements: Set<strin
 }
 
 let sum = 0;
-data.forEach(line => {
+const out = data.map(line => {
   const seenArrangements = new Set<string>();
   const [record, rawGroups] = line.split(' ');
   const groups = rawGroups.split(',').map(Number);
@@ -102,6 +102,13 @@ data.forEach(line => {
   console.log(amount);
   console.log('\n');
   sum += amount;
+  return amount;
 });
+const outFile = Bun.file('check1.txt');
+const writer = outFile.writer();
+for (let i = 0; i < out.length; i++) {
+  writer.write(`${out[i]}\n`);
+}
+writer.end();
 
 console.log(sum);
