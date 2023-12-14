@@ -12,7 +12,7 @@ data.forEach(line => {
   plate.push(line.split(''));
 });
 
-const tick = () => {
+const tickNorth = () => {
   let didMove = false;
   const newPlateState = JSON.parse(JSON.stringify(plate));
   // console.log(newPlateState);
@@ -35,11 +35,130 @@ const tick = () => {
   return didMove;
 }
 
-let someMoved = true;
-while (someMoved) {
-  // console.log('tick');
-  someMoved = tick();
+const tickSouth = () => {
+  let didMove = false;
+  const newPlateState = JSON.parse(JSON.stringify(plate));
+  // console.log(newPlateState);
+  for (let y = 0; y < newPlateState.length; y++) {
+    for (let x = 0; x < newPlateState[0].length; x++) {
+      const cell = plate[y][x];
+      // console.log(cell);
+      if (cell === 'O') {
+        if (plate[y + 1]?.[x] === '.') {
+          newPlateState[y + 1][x] = 'O';
+          newPlateState[y][x] = '.';
+          didMove = true;
+        }
+      }
+    }
+  }
+
+  plate = newPlateState;
+
+  return didMove;
 }
+
+const tickWest = () => {
+  let didMove = false;
+  const newPlateState = JSON.parse(JSON.stringify(plate));
+  // console.log(newPlateState);
+  for (let y = 0; y < newPlateState.length; y++) {
+    for (let x = 0; x < newPlateState[0].length; x++) {
+      const cell = plate[y][x];
+      // console.log(cell);
+      if (cell === 'O') {
+        if (plate[y][x - 1] === '.') {
+          newPlateState[y][x - 1] = 'O';
+          newPlateState[y][x] = '.';
+          didMove = true;
+        }
+      }
+    }
+  }
+
+  plate = newPlateState;
+
+  return didMove;
+}
+
+const tickEast = () => {
+  let didMove = false;
+  const newPlateState = JSON.parse(JSON.stringify(plate));
+  // console.log(newPlateState);
+  for (let y = 0; y < newPlateState.length; y++) {
+    for (let x = 0; x < newPlateState[0].length; x++) {
+      const cell = plate[y][x];
+      // console.log(cell);
+      if (cell === 'O') {
+        if (plate[y][x + 1] === '.') {
+          newPlateState[y][x + 1] = 'O';
+          newPlateState[y][x] = '.';
+          didMove = true;
+        }
+      }
+    }
+  }
+
+  plate = newPlateState;
+
+  return didMove;
+}
+
+const tiltNorth = () => {
+  let someMoved = true;
+  while (someMoved) {
+    // console.log('tick');
+    someMoved = tickNorth();
+  }
+}
+
+const tiltSouth = () => {
+  let someMoved = true;
+  while (someMoved) {
+    someMoved = tickSouth();
+  }
+}
+
+const tiltWest = () => {
+  let someMoved = true;
+  while (someMoved) {
+    someMoved = tickWest();
+  }
+}
+
+const tiltEast = () => {
+  let someMoved = true;
+  while (someMoved) {
+    someMoved = tickEast();
+  }
+}
+
+let cycleStart;
+let cycleSize;
+let seen = new Map<string, number>();
+const target = 1000000000;
+for (let i = 0; i < target; i++) {
+  tiltNorth();
+  tiltWest();
+  tiltSouth();
+  tiltEast();
+  if (seen.has(plate.join(''))) {
+    cycleStart = seen.get(plate.join(''))!;
+    cycleSize = i - seen.get(plate.join(''))!;
+    console.log('dupe happened on', i, 'for', seen.get(plate.join('')));
+    break;
+  }
+  seen.set(plate.join(''), i);
+}
+
+const remainder = (target - cycleStart!) % cycleSize!;
+for (let i = 0; i < remainder - 1; i++) {
+  tiltNorth();
+  tiltWest();
+  tiltSouth();
+  tiltEast();
+}
+
 
 let sum = 0;
 for (let y = 0; y < plate.length; y++) {
@@ -50,6 +169,8 @@ for (let y = 0; y < plate.length; y++) {
     }
   }
 }
-
-console.log(plate.map(l => l.join('')).join('\n'));
 console.log(sum);
+
+
+// console.log(seen);
+// console.log(plate.map(l => l.join('')).join('\n'));
