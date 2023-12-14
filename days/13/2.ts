@@ -5,6 +5,19 @@ import * as ArrayUtils from '../../utils/ArrayUtils.ts';
 const inputFile = process.argv[2];
 const rawData = await Bun.file(`${import.meta.dir}/${inputFile || 'input.txt'}`).text();
 const data = rawData.split('\n\n');
+
+const getDiff = (a: string, b: string) => {
+  let diff = 0;
+  let lastDiffIndex = -1;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      diff++;
+      lastDiffIndex = i;
+    }
+  }
+  return { diff, lastDiffIndex };
+}
+
 let op = '-'
 const checkNeighbors = (y1: number, y2: number, grid: string[]) => {
   const max = Math.min(y1 + 1, grid.length - y2);
@@ -20,6 +33,7 @@ const checkNeighbors = (y1: number, y2: number, grid: string[]) => {
     checked.unshift(grid[y1 - i]);
     checked.push(grid[y2 + i]);
     if (grid[y1 - i] !== grid[y2 + i]) {
+      // then check to see if they are off by one, if so, try changing one of them and continue; may have to do it both directions
       symmetrical = false;
       break;
     }
@@ -38,17 +52,38 @@ const displayLine = (grid: string[], y1: number, y2: number) => {
 }
 
 const findLine = (grid: string[]) => {
-  for (let i = 1; i < grid.length; i++) {
-    const prev = grid[i - 1];
-    const curr = grid[i];
-    if (prev === curr) {
-      if (checkNeighbors(i - 1, i, grid)) {
-        // displayLine(grid, i - 1, i);
-
-        return i;
+  let rowWidth = grid[0].length;
+  const g = [...grid];
+  const fold = [];
+  for (let i = 0; i < grid.length - 1; i++) {
+    fold.unshift(g.shift());
+    const shorter = Math.min(fold.length, g.length);
+    // display logic
+    const { diff } = getDiff(g.slice(0, shorter).join(','), fold.slice(0, shorter).join(','))
+    if (diff === 1) {
+      console.log('')
+      for (let i = 0; i < Math.max(fold.length, g.length); i++) {
+        console.log(g[i] ?? ''.padStart(rowWidth, ' '), fold[i] ?? ''.padStart(rowWidth, ' '));
       }
+      console.log(diff);
+      // found it
+      return i + 1;
     }
+
+    // console.log(g.join('\n'), fold.join('\n'));
+    // console.log(fold.join('\n'));
   }
+  // for (let i = 1; i < grid.length; i++) {
+  //   const prev = grid[i - 1];
+  //   const curr = grid[i];
+  //   if (prev === curr) {
+  //     if (checkNeighbors(i - 1, i, grid)) {
+  //       // displayLine(grid, i - 1, i);
+
+  //       return i;
+  //     }
+  //   }
+  // }
 
   return null;
 }
