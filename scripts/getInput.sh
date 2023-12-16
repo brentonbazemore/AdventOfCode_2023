@@ -1,4 +1,4 @@
-YEAR=2022
+YEAR=2023
 . ./scripts/focusedDay.dat
 . .env
 
