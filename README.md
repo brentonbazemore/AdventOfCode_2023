@@ -85,4 +85,5 @@ bun input
 
 ## Useful References
 - [Applied DFS / BFS](https://adrianmejia.com/how-to-solve-any-graph-2d-arrays-maze-interview-questions-in-javascript-dfs-vs-bfs/)
+- [Dijkstra's Implementation](https://github.com/kaisnb/dijkstra-ts/blob/master/src/index.ts)
 - Multithreading example can be found in `./multithreaded`

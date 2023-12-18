@@ -51,6 +51,55 @@ const getNeighbors = (node: NodeState) => {
     weight: number;
   }[] = [];
 
+  if (node.lineLength < 4) {
+    if (node.lastDirection === Direction.RIGHT) {
+      const x = node.x + 1;
+      const y = node.y;
+      const lineLength = node.lineLength + 1;
+      if (x < data[0].length) {
+        next.push({
+          node: { x, y, lastDirection: node.lastDirection, lineLength },
+          weight: +data[y][x],
+        });
+      }
+    }
+    if (node.lastDirection === Direction.LEFT) {
+      const x = node.x - 1;
+      const y = node.y;
+      const lineLength = node.lineLength + 1;
+      if (x >= 0) {
+        next.push({
+          node: { x, y, lastDirection: node.lastDirection, lineLength },
+          weight: +data[y][x],
+        });
+      }
+    }
+    if (node.lastDirection === Direction.UP) {
+      const x = node.x;
+      const y = node.y - 1;
+      const lineLength = node.lineLength + 1;
+      if (y >= 0) {
+        next.push({
+          node: { x, y, lastDirection: node.lastDirection, lineLength },
+          weight: +data[y][x],
+        });
+      }
+    }
+
+    if (node.lastDirection === Direction.DOWN) {
+      const x = node.x;
+      const y = node.y + 1;
+      const lineLength = node.lineLength + 1;
+      if (y < data.length) {
+        next.push({
+          node: { x, y, lastDirection: node.lastDirection, lineLength },
+          weight: +data[y][x],
+        });
+      }
+    }
+    return next;
+  }
+
   // left
   // prevent reverse direction
   if (node.lastDirection != Direction.RIGHT) {
@@ -59,7 +108,7 @@ const getNeighbors = (node: NodeState) => {
     const lineLength = node.lastDirection === Direction.LEFT ? node.lineLength + 1 : 1;
     if (x >= 0) {
       // OOB
-      if (lineLength <= 3) {
+      if (lineLength <= 10) {
         next.push({
           node: { x, y, lastDirection: Direction.LEFT, lineLength },
           weight: +data[y][x],
@@ -74,7 +123,7 @@ const getNeighbors = (node: NodeState) => {
     const y = node.y;
     const lineLength = node.lastDirection === Direction.RIGHT ? node.lineLength + 1 : 1;
     if (x < data[0].length) {
-      if (lineLength <= 3) {
+      if (lineLength <= 10) {
         next.push({
           node: { x, y, lastDirection: Direction.RIGHT, lineLength },
           weight: +data[y][x],
@@ -89,7 +138,7 @@ const getNeighbors = (node: NodeState) => {
     const y = node.y - 1;
     const lineLength = node.lastDirection === Direction.UP ? node.lineLength + 1 : 1;
     if (y >= 0) {
-      if (lineLength <= 3) {
+      if (lineLength <= 10) {
         next.push({
           node: { x, y, lastDirection: Direction.UP, lineLength },
           weight: +data[y][x],
@@ -104,7 +153,7 @@ const getNeighbors = (node: NodeState) => {
     const y = node.y + 1;
     const lineLength = node.lastDirection === Direction.DOWN ? node.lineLength + 1 : 1;
     if (y < data.length) {
-      if (lineLength <= 3) {
+      if (lineLength <= 10) {
         next.push({
           node: { x, y, lastDirection: Direction.DOWN, lineLength },
           weight: +data[y][x],
@@ -133,8 +182,9 @@ const start: NodeState = {
 };
 
 const out = dijkstra(adapter, start);
+
 const finishStates = [];
-for (let i = 1; i <= 3; i++) {
+for (let i = 4; i <= 10; i++) {
   for (let j = 0; j < 4; j++) {
     finishStates.push({ x: data[0].length - 1, y: data.length - 1, lineLength: i, lastDirection: j });
   }
@@ -152,7 +202,7 @@ const lowest = finishStates
     },
     { distance: Infinity, path: [] }
   );
-display(lowest.path);
+// display(lowest.path);
 console.log(lowest.distance);
 
 // finishStates.map(finish => {
